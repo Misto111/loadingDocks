@@ -1,0 +1,25 @@
+.map-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100vh; /* Запълва цялата височина на прозореца */
+}
+
+#map {
+    width: 100%;
+    flex-grow: 1;  /* Картата ще расте с останалото пространство */
+    margin-top: 50px;  /* Отстъп отгоре */
+}
+body, #outlet {
+    height: 100vh; /* Може да направиш височината на тялото да е 100% */
+    width: 100%;
+    margin: 0;
+}
+
+.back-button {
+    position: absolute;
+    top: 10px; /* Увеличи стойността, ако искаш бутона да е по-високо */
+    left: 10px;
+    z-index: 1000; /* За да се увериш, че бутонът е върху картата */
+}

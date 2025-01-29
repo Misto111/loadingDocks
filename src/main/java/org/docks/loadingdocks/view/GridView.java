@@ -18,12 +18,11 @@ import java.util.List;
 @PageTitle("Table")
 public class GridView extends VerticalLayout {
 
-    private final Grid<Schedule> scheduleGrid = new Grid<>(); // Създаваме Grid без автоматично създаване на колони
+    private final Grid<Schedule> scheduleGrid = new Grid<>();
     private final TranslationService translationService;
     private Button deleteButton;
 
-    private final ScheduleService scheduleService; // Използваме ScheduleService
-    //private final Grid<Schedule> scheduleGrid = new Grid<>(Schedule.class); // Използваме Schedule вместо DeliverySlotEntity
+    private final ScheduleService scheduleService;
     private final DatePicker datePicker = new DatePicker("Choose a date");
     private final ComboBox<String> branchComboBox = new ComboBox<>("Choose a branch");
 
@@ -31,27 +30,22 @@ public class GridView extends VerticalLayout {
         this.translationService = translationService;
         this.scheduleService = scheduleService;
 
-        // Бутон за връщане назад
-        Button backButton = BackButtonService.createBackButton("", translationService); // Empty for root navigation
+        Button backButton = BackButtonService.createBackButton("", translationService);
 
-        // Центрираме всичко в VerticalLayout
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        setUpGrid(); // Конфигурираме таблицата
-        add(backButton, scheduleGrid); // Добавяме таблицата
-        loadSchedules(); // Зареждаме графиците
+        setUpGrid();
+        add(backButton, scheduleGrid);
+        loadSchedules();
     }
 
     private void setUpGrid() {
-        // Задаваме колоните с превод на заглавията
-        // Колона за VehicleType
         scheduleGrid.addColumn(schedule -> translationService.translateEnum(schedule.getVehicleType()))
                 .setHeader(translationService.getTranslation("vehicleType"))
                 .setKey("vehicleType")
                 .setWidth("150px");
 
-        // Колона за Branch
         scheduleGrid.addColumn(schedule -> translationService.translateEnum(schedule.getBranch()))
                 .setHeader(translationService.getTranslation("branch"))
                 .setKey("branch")
@@ -77,28 +71,26 @@ public class GridView extends VerticalLayout {
                 .setKey("reservedBy")
                 .setWidth("150px");
 
-        // Добавяне на колона за действия
         scheduleGrid.addComponentColumn(schedule -> {
             deleteButton = new Button(translationService.getTranslation("delete"));
             deleteButton.getStyle().set("color", "red");
             deleteButton.addClickListener(click -> {
-                scheduleService.deleteSchedule(schedule.getId()); // Изтриване на графика
-                refreshSchedules(); // Обновяване на таблицата
+                scheduleService.deleteSchedule(schedule.getId());
+                refreshSchedules();
             });
             return deleteButton;
         }).setHeader(translationService.getTranslation("actions"));
 
-        // Опционално: стилове и оформление
         scheduleGrid.getColumns().forEach(column -> column.setAutoWidth(true));
     }
 
     private void loadSchedules() {
-        List<Schedule> schedules = scheduleService.getAllSchedules(); // Извличаме всички графици
-        scheduleGrid.setItems(schedules); // Зареждаме ги в таблицата
+        List<Schedule> schedules = scheduleService.getAllSchedules();
+        scheduleGrid.setItems(schedules);
     }
 
     private void refreshSchedules() {
-        List<Schedule> schedules = scheduleService.getAllSchedules(); // Обновяваме графиците
-        scheduleGrid.setItems(schedules); // Презареждаме таблицата
+        List<Schedule> schedules = scheduleService.getAllSchedules();
+        scheduleGrid.setItems(schedules);
     }
 }

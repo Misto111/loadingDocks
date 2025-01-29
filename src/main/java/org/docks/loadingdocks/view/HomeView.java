@@ -18,37 +18,26 @@ public class HomeView extends VerticalLayout {
     public HomeView(TranslationService translationService) {
         this.translationService = translationService;
 
-        // Центрираме останалата част от съдържанието
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-
-
-        // Създаване на H1 компонент за съобщението
         welcomeMessage = new com.vaadin.flow.component.html.H1();
         updateWelcomeMessage();
 
-
-        // Регистрация като слушател за промяна на езика
         translationService.addLanguageChangeListener(locale -> {
             UI.getCurrent().access(this::updateWelcomeMessage);
         });
-        //add(createHomeLayout());
 
         if (isLoggedIn()) {
-            // Ако потребителят е логнат
-
             add(createLogoLayout());
 
-            NavbarComponent navbar = new NavbarComponent( translationService);
+            NavbarComponent navbar = new NavbarComponent(translationService);
             add(navbar);
 
             add(createHomeLayout());
 
 
         } else {
-            // Ако потребителят не е логнат
-
             add(welcomeMessage, createLogoLayout());
 
             NavbarComponent navbar = new NavbarComponent(translationService);
@@ -71,11 +60,11 @@ public class HomeView extends VerticalLayout {
         logoLayout.setSpacing(true);
 
 
-        com.vaadin.flow.component.html.Image logo1 = new com.vaadin.flow.component.html.Image("/images/aiko.png", "Logo 1");
+        com.vaadin.flow.component.html.Image logo1 = new com.vaadin.flow.component.html.Image("", "Logo 1");
         logo1.setWidth("80px");
         logo1.setHeight("50px");
 
-        com.vaadin.flow.component.html.Image logo2 = new com.vaadin.flow.component.html.Image("/images/momaxx.png", "Logo 2");
+        com.vaadin.flow.component.html.Image logo2 = new com.vaadin.flow.component.html.Image("", "Logo 2");
         logo2.setWidth("80px");
         logo2.setHeight("50px");
 
@@ -104,16 +93,6 @@ public class HomeView extends VerticalLayout {
     }
 
     private boolean isLoggedIn() {
-        // Проверяваме дали има записан email в сесията
         return VaadinSession.getCurrent().getAttribute("email") != null;
     }
-
-//    private String getTranslation(String key) {
-//        Locale currentLocale = VaadinSession.getCurrent().getAttribute(Locale.class);
-//        if (currentLocale == null) {
-//            currentLocale = Locale.ENGLISH; // по подразбиране
-//        }
-//        return i18NProvider.getTranslation(key, currentLocale);
-//    }
-
 }

@@ -1,5 +1,4 @@
 package org.docks.loadingdocks.model.service.impl;
-
 import com.vaadin.flow.server.VaadinSession;
 import jakarta.transaction.Transactional;
 import org.docks.loadingdocks.model.entity.DriverEntity;
@@ -35,12 +34,10 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverEntity saveDriver(DriverEntity driverEntity) {
         if (driverEntity.getId() == null) {
-            // Това е нов драйвър, задаваме му криптирана парола
             driverEntity.setPassword(passwordEncoder.encode(driverEntity.getPassword()));
             return driverRepository.save(driverEntity);
         }
 
-        // Ако драйвърът вече съществува, обновяваме данните му
         DriverEntity existingDriver = driverRepository.findById(driverEntity.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Driver not found with ID: " + driverEntity.getId()));
 
@@ -48,7 +45,6 @@ public class DriverServiceImpl implements DriverService {
         existingDriver.setLastName(driverEntity.getLastName());
         existingDriver.setPhoneNumber(driverEntity.getPhoneNumber());
 
-        // Ако е променена паролата, я криптираме
         if (!driverEntity.getPassword().equals(existingDriver.getPassword())) {
             existingDriver.setPassword(passwordEncoder.encode(driverEntity.getPassword()));
         }
@@ -77,9 +73,8 @@ public class DriverServiceImpl implements DriverService {
         DriverEntity driver = driverRepository.findByEmail(email).orElse(null);
 
         if (driver != null && passwordEncoder.matches(password, driver.getPassword())) {
-            // Записваме информация в сесията
             VaadinSession.getCurrent().setAttribute("email", driver.getEmail());
-            VaadinSession.getCurrent().setAttribute("role", driver.getRole().toString());  // Записваме ролята
+            VaadinSession.getCurrent().setAttribute("role", driver.getRole().toString());
             return true;
         }
 
@@ -105,7 +100,6 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    // Изтриване на график по ID
     public void deleteSchedule(Long scheduleId) {
         scheduleRepository.deleteById(scheduleId);
     }

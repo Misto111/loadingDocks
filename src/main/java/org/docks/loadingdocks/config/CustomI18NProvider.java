@@ -9,7 +9,6 @@ import java.util.Map;
 
 public class CustomI18NProvider implements I18NProvider {
 
-    // Съхраняваме преводите в карта
     private static final Map<String, Map<Locale, String>> translations = new HashMap<>();
 
     static {
@@ -267,20 +266,17 @@ public class CustomI18NProvider implements I18NProvider {
 
         addTranslation("Change Password", new Locale("bg"), "Промяна на паролата");
 
-
     }
 
     private static void addTranslation(String key, Locale locale, String translation) {
         translations.computeIfAbsent(key, k -> new HashMap<>()).put(locale, translation);
     }
 
-    // Връща списък с локали
     @Override
     public List<Locale> getProvidedLocales() {
         return List.of(Locale.ENGLISH, new Locale("bg"));
     }
 
-    // Връща превод за даден ключ и локал
     @Override
     public String getTranslation(String key, Locale locale, Object... params) {
 
@@ -291,6 +287,6 @@ public class CustomI18NProvider implements I18NProvider {
             return translation;
         }
 
-        return key; // Ако няма превод, връща самия ключ
+        return key;
     }
 }

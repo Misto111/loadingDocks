@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum BranchLocationEnum {
 
 
-    SOFIA("Aiko XXXL Sofia, bul. Europe 441", 42.6977, 23.3219, "bul. Europe №441", "10:00 - 20:00", "https://aiko-bg.com/media/shop_images/Aiko-varna-Shop.jpg","https://aiko-bg.com/affiliates/grad-sofia-1/", "0898305845"),
-    PLOVDIV("Aiko XXXL Plovdiv", 42.1354, 24.7453, "str. Ivan Vazov №14", "10:00 - 20:00", "https://aiko-bg.com/media/shop_images/aiko-pv.png", "https://aiko-bg.com/affiliates/grad-plovdiv-06/", "0898305845"),
-    VARNA("Aiko XXXL Varna", 43.2141, 27.9147, "Varna, bul. Vladislav Varnenchik №277А", "10:00 - 20:00", "https://aiko-bg.com/media/shop_images/Aiko-varna-Shop.jpg", "https://aiko-bg.com/affiliates/gr-varna/", "0898305845"),
-    BURGAS("Aiko XXXL Burgas", 42.504792, 27.462636, "Burgas, bul. Ianko Komitov №8", "10:00 - 20:00", "https://aiko-bg.com/media/shop_images/Aiko-Burgas-ShopN.jpg", "https://aiko-bg.com/affiliates/grad-burgas-01/", "0898305845");
+    SOFIA("Sofia", 42.6977, 23.3219, "", "10:00 - 20:00", "","", "0898"),
+    PLOVDIV("Plovdiv", 42.1354, 24.7453, "", "10:00 - 20:00", "", "", "0898"),
+    VARNA("Varna", 43.2141, 27.9147, "", "10:00 - 20:00", "", "", "0898"),
+    BURGAS("Burgas", 42.504792, 27.462636, "", "10:00 - 20:00", "", "", "0898");
 
     private final String name;
     private final double lat;

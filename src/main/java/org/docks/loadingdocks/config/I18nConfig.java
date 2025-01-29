@@ -9,6 +9,6 @@ public class I18nConfig {
 
     @Bean
     public I18NProvider i18nProvider() {
-        return new CustomI18NProvider(); // Регистрираме CustomI18NProvider
+        return new CustomI18NProvider();
     }
 }

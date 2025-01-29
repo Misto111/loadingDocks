@@ -4,7 +4,6 @@ public enum Role {
     ADMIN,
     USER;
 
-//Ваадин автоматично ще вземе toString() метода
     @Override
     public String toString() {
         switch (this) {

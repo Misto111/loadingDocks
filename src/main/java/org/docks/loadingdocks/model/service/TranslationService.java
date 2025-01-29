@@ -23,7 +23,7 @@ public class TranslationService {
     public String getTranslation(String key) {
         Locale currentLocale = VaadinSession.getCurrent().getAttribute(Locale.class);
         if (currentLocale == null) {
-            currentLocale = Locale.ENGLISH; // По подразбиране
+            currentLocale = Locale.ENGLISH;
         }
         return i18NProvider.getTranslation(key, currentLocale);
     }
@@ -31,15 +31,10 @@ public class TranslationService {
     public void changeLanguage(String language) {
         Locale selectedLocale = "Български".equals(language) ? new Locale("bg") : Locale.ENGLISH;
 
-        // Записваме избора на език в сесията
         VaadinSession.getCurrent().setAttribute(Locale.class, selectedLocale);
 
-        // Промяна на локала на приложението
         UI.getCurrent().setLocale(selectedLocale);
 
-        //UI.getCurrent().getPage().reload();
-
-        // Известяване на слушателите
         notifyLanguageChange(selectedLocale);
     }
 

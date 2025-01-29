@@ -16,8 +16,8 @@ import java.util.List;
 
 @Route("branches")
 @PageTitle("Branches")
-@JavaScript("map.js")  // Зареждаме map.js за Google Maps
-@CssImport("map-styles.css")  // Зареждаме стила
+@JavaScript("map.js")
+@CssImport("map-styles.css")
 public class BranchesView extends VerticalLayout {
 
     private final TranslationService translationService;
@@ -25,37 +25,30 @@ public class BranchesView extends VerticalLayout {
 
     public BranchesView(TranslationService translationService) {
         this.translationService = translationService;
-        // Създаваме предварително дефинирани филиали
         List<Branch> branches = createStaticBranches();
 
-        // Контейнер за картата
         Div mapContainer = new Div();
         mapContainer.setId("map");
         mapContainer.getStyle().set("width", "100%").set("height", "400px");
 
-// Контейнер за визитките на филиалите
         Div branchCardsContainer = new Div();
         branchCardsContainer.setWidthFull();
         branchCardsContainer.getStyle()
-                .set("display", "flex") // Използваме flexbox
-                .set("flex-wrap", "wrap") // Позволява пренасяне на нов ред
-                .set("justify-content", "space-around") // Разпределя равномерно картите
-                .set("gap", "20px") // Разстояние между картите
-                .set("max-height", "400px") // Ограничаваме височината на контейнера
-                .set("overflow-y", "auto") // Активира вертикално превъртане
-                .set("padding", "10px") // Добавяме вътрешно разстояние
+                .set("display", "flex")
+                .set("flex-wrap", "wrap")
+                .set("justify-content", "space-around")
+                .set("gap", "20px")
+                .set("max-height", "400px")
+                .set("overflow-y", "auto")
+                .set("padding", "10px")
                 .set("box-sizing", "border-box");
 
-        // Добавяме визитките за всеки филиал
         branches.forEach(branch -> branchCardsContainer.add(createBranchCard(branch)));
 
-        // Добавяме картата и визитките в основния layout
         add(mapContainer, branchCardsContainer);
 
-        // Инициализираме картата с JSON данни
         getElement().executeJs("setTimeout(function() { window.branchLocations = " + branchesToJson(branches) + "; initMap(); }, 1000);");
 
-        // Добавяме бутон за връщане
         Button backButton = BackButtonService.createBackButton("", translationService);
         backButton.getStyle().set("position", "absolute").set("top", "20px").set("left", "20px");
         add(backButton);
@@ -63,12 +56,8 @@ public class BranchesView extends VerticalLayout {
         setSizeFull();
     }
 
-    /**
-     * Създава статичен списък от филиали.
-     */
     private List<Branch> createStaticBranches() {
         List<Branch> branches = new ArrayList<>();
-        // Преобразуваме данни от енъма в обекти Branch
         for (BranchLocationEnum location : BranchLocationEnum.values()) {
             branches.add(new Branch(
                     location.getName(),
@@ -85,9 +74,6 @@ public class BranchesView extends VerticalLayout {
         return branches;
     }
 
-    /**
-     * Създава визитка за даден филиал.
-     */
     private Div createBranchCard(Branch branch) {
         Div branchCard = new Div();
         branchCard.getStyle()
@@ -95,30 +81,28 @@ public class BranchesView extends VerticalLayout {
                 .set("padding", "10px")
                 .set("margin", "10px")
                 .set("border-radius", "5px")
-                .set("width", "calc(45%)") // Размер на картата
+                .set("width", "calc(45%)")
                 .set("box-sizing", "border-box")
-                .set("display", "flex") // Flexbox за хоризонтално подравняване
-                .set("align-items", "center") // Вертикално подравняване
-                .set("gap", "10px"); // Разстояние между изображението и текста
+                .set("display", "flex")
+                .set("align-items", "center")
+                .set("gap", "10px");
 
-        // Създаваме изображението
         com.vaadin.flow.component.html.Image image = new com.vaadin.flow.component.html.Image(branch.getImageUrl(), "Branch Image");
         image.getStyle()
-                .set("width", "210px") // Фиксирана ширина на изображението
-                .set("height", "120px") // Фиксирана височина на изображението
-                .set("object-fit", "cover") // Подрязване на изображението, ако е необходимо
+                .set("width", "210px")
+                .set("height", "120px")
+                .set("object-fit", "cover")
                 .set("border-radius", "5px");
         branchCard.add(image);
 
-        // Създаваме контейнер за текста
         Div textContainer = new Div();
-        textContainer.getStyle().set("flex", "1"); // Текстът заема оставащото пространство
+        textContainer.getStyle().set("flex", "1");
 
         Div nameDiv = new Div();
         nameDiv.setText(branch.getName());
         nameDiv.getStyle()
                 .set("font-weight", "bold")
-                .set("font-size", "1em"); // Голям шрифт за името
+                .set("font-size", "1em");
         textContainer.add(nameDiv);
 
         Div addressDiv = new Div();
@@ -138,15 +122,11 @@ public class BranchesView extends VerticalLayout {
         urlDiv.add(link);
         textContainer.add(urlDiv);
 
-        // Добавяме текстовия контейнер в картата
         branchCard.add(textContainer);
 
         return branchCard;
     }
 
-    /**
-     * Преобразува данните на филиалите в JSON формат за картата.
-     */
     private String branchesToJson(List<Branch> branches) {
         StringBuilder jsonBuilder = new StringBuilder("[");
         for (Branch branch : branches) {
@@ -169,9 +149,6 @@ public class BranchesView extends VerticalLayout {
         return jsonBuilder.toString();
     }
 
-    /**
-     * Клас, който представлява филиал.
-     */
     public static class Branch {
         private String name;
         private double lat;

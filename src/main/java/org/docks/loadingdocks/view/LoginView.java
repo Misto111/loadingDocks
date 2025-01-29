@@ -23,15 +23,12 @@ public class LoginView extends VerticalLayout {
         this.translationService = translationService;
         this.driverService = driverService;
 
-        // Инициализация на компонентите с превод
         emailField = new TextField(translationService.getTranslation("email"));
         passwordField = new PasswordField(translationService.getTranslation("password"));
         loginButton = new Button(translationService.getTranslation("login"));
 
-        Button backButton = BackButtonService.createBackButton("", translationService); // Empty for root navigation
-        //backButton = new Button(translationService.getTranslation("back"));
+        Button backButton = BackButtonService.createBackButton("", translationService);
 
-        // Центрираме всичко в VerticalLayout
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 

@@ -30,7 +30,7 @@ public class SchedulesView extends VerticalLayout {
     private final ScheduleService scheduleService;
     private final HolidayService holidayService;
     private ComboBox<VehicleType> vehicleTypeComboBox;
-    private ComboBox<BranchLocationEnum> branchComboBox; // Заменяме String с BranchLocationEnum
+    private ComboBox<BranchLocationEnum> branchComboBox;
     private ComboBox<GoodsEnum> goodsTypeComboBox;
     private NumberField linearMetersField;
     private DatePicker datePicker;
@@ -45,7 +45,7 @@ public class SchedulesView extends VerticalLayout {
         this.holidayService = holidayService;
         this.translationService = translationService;
 
-        Button backButton = BackButtonService.createBackButton("", translationService);// Empty for root navigation
+        Button backButton = BackButtonService.createBackButton("", translationService);
 
         setWidthFull();
         setSpacing(true);
@@ -67,15 +67,13 @@ public class SchedulesView extends VerticalLayout {
         logoLayout.setSpacing(true);
 
 
-
-        com.vaadin.flow.component.html.Image logo1 = new com.vaadin.flow.component.html.Image("/images/aiko.png", "Logo 1");
+        com.vaadin.flow.component.html.Image logo1 = new com.vaadin.flow.component.html.Image("", "Logo 1");
         logo1.setWidth("80px");
         logo1.setHeight("50px");
 
-        com.vaadin.flow.component.html.Image logo2 = new com.vaadin.flow.component.html.Image("/images/momaxx.png", "Logo 2");
+        com.vaadin.flow.component.html.Image logo2 = new com.vaadin.flow.component.html.Image("", "Logo 2");
         logo2.setWidth("80px");
         logo2.setHeight("50px");
-
 
 
         logoLayout.add(logo1, logo2);
@@ -90,44 +88,37 @@ public class SchedulesView extends VerticalLayout {
         formLayout.setPadding(true);
         formLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        // Групиране на "Вид превозно средство" и "Филиал"
         VerticalLayout vehicleAndBranchLayout = new VerticalLayout();
         vehicleAndBranchLayout.setSpacing(true);
         vehicleAndBranchLayout.setDefaultHorizontalComponentAlignment(Alignment.END);
 
         vehicleTypeComboBox = new ComboBox<>(translationService.getTranslation("Vehicle type"));
-        vehicleTypeComboBox.setItems(VehicleType.values()); // Добавяме всички стойности на енума
-        vehicleTypeComboBox.setItemLabelGenerator(vehicleType -> translationService.translateEnum(vehicleType)); // Превеждаме
+        vehicleTypeComboBox.setItems(VehicleType.values());
+        vehicleTypeComboBox.setItemLabelGenerator(vehicleType -> translationService.translateEnum(vehicleType));
 
-        // Създаваме ComboBox за филиалите
+
         branchComboBox = new ComboBox<>(translationService.getTranslation("Branch"));
         branchComboBox.setItems(Arrays.asList(BranchLocationEnum.values()));
-        branchComboBox.setItemLabelGenerator(branchLocation -> translationService.translateEnum(branchLocation)); // Превеждаме
+        branchComboBox.setItemLabelGenerator(branchLocation -> translationService.translateEnum(branchLocation));
 
         vehicleAndBranchLayout.add(vehicleTypeComboBox, branchComboBox);
 
-        // Добавяме слушател за промени в branchComboBox. Това ще актуализира времевите слотове, ако има избрана дата.
+
         branchComboBox.addValueChangeListener(event -> {
             BranchLocationEnum selectedBranch = event.getValue();
             LocalDate selectedDate = datePicker.getValue();
 
-            // Проверка дали има избрана дата и филиал и актуализиране на времевите слотове
             if (selectedBranch != null && selectedDate != null) {
-                refreshPortalGrid(); // Актуализиране на времевите слотове
+                refreshPortalGrid();
             }
         });
 
-        // Групиране на "Вид стока", "Линейни метри" и "Добави стока"
         VerticalLayout goodsAndMetersLayout = new VerticalLayout();
         goodsAndMetersLayout.setSpacing(true);
         goodsAndMetersLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-
-
-        //комбо за стоките
         goodsTypeComboBox = new ComboBox<>(translationService.getTranslation("Type of product"));
         goodsTypeComboBox.setItems(GoodsEnum.values());
-        // Задаваме как да се показват имената на стоките
         goodsTypeComboBox.setItemLabelGenerator(goodsType -> translationService.translateEnum(goodsType));
         goodsTypeComboBox.getElement().getStyle().set("text-align", "center");
 
@@ -136,60 +127,51 @@ public class SchedulesView extends VerticalLayout {
         linearMetersField.setStep(0.1);
 
         Button addGoodsButton = new Button(translationService.getTranslation("Add the product"), event -> {
-            GoodsEnum goodsType = goodsTypeComboBox.getValue(); // Сега е тип GoodsEnum
+            GoodsEnum goodsType = goodsTypeComboBox.getValue();
             Double meters = linearMetersField.getValue();
 
             if (goodsType == null || meters == null || meters <= 0) {
                 Notification notification = Notification.show(translationService.getTranslation("Please enter valid product details and meters"));
-                notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+                notification.setPosition(Notification.Position.TOP_CENTER);
                 return;
             }
 
-            goodsMeters.put(goodsType.name(), goodsMeters.getOrDefault(goodsType.name(), 0.0) + meters); // Използваме name() за съхранение на низ
+            goodsMeters.put(goodsType.name(), goodsMeters.getOrDefault(goodsType.name(), 0.0) + meters);
             Notification notification = Notification.show(translationService.getTranslation("Added ")
                     + meters + translationService.getTranslation(" linear meters for ") + translationService.translateEnum(goodsType));
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            notification.setPosition(Notification.Position.TOP_CENTER);
         });
 
         goodsAndMetersLayout.add(goodsTypeComboBox, linearMetersField, addGoodsButton);
 
-        // Групиране на "Дата за разтоварване" и "Създай график"
         VerticalLayout centerLayout = new VerticalLayout();
         centerLayout.setSpacing(true);
         centerLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        // Инициализация на datePicker
         datePicker = new DatePicker(translationService.getTranslation("Unloading date"));
         datePicker.setMin(LocalDate.now());
 
-        // Добавяне на слушател за промени на datePicker
         datePicker.addValueChangeListener(event -> {
             LocalDate selectedDate = event.getValue();
 
-            // Получаваме директно BranchLocationEnum
-            BranchLocationEnum selectedBranch = branchComboBox.getValue();  // Вече е BranchLocationEnum
+            BranchLocationEnum selectedBranch = branchComboBox.getValue();
 
-
-            // Проверка и обновяване на времевите слотове
             if (selectedDate != null && selectedBranch != null) {
-                updateTimeSlotsForDate(selectedDate, selectedBranch);  // Използваме BranchLocationEnum директно
+                updateTimeSlotsForDate(selectedDate, selectedBranch);
             }
 
             if (selectedDate != null && selectedBranch != null) {
-                // Обновяваме визуализацията на слотовете
                 refreshPortalGrid();
 
-                // Проверка дали всички слотове са заети
                 if (areAllSlotsOccupied()) {
                     Notification notification = Notification.show(translationService.getTranslation("No available portals on this date!"));
-                    notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+                    notification.setPosition(Notification.Position.TOP_CENTER);
                 }
             }
 
-            // Проверка за празник
             if (holidayService.isHoliday(selectedDate)) {
                 Notification notification = Notification.show(translationService.getTranslation("The selected day is a holiday. Please choose another day!"));
-                notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+                notification.setPosition(Notification.Position.TOP_CENTER);
                 datePicker.clear();
             }
         });
@@ -199,7 +181,6 @@ public class SchedulesView extends VerticalLayout {
 
         centerLayout.add(datePicker, createScheduleButton);
 
-        // Обща подредба на всички секции
         HorizontalLayout mainLayout = new HorizontalLayout();
         mainLayout.setWidthFull();
         mainLayout.setSpacing(true);
@@ -226,7 +207,7 @@ public class SchedulesView extends VerticalLayout {
                 portalCheckbox.setWidth("80px");
                 portalCheckbox.setHeight("30px");
 
-                portalCheckbox.getElement().getStyle().set("background-color", "#d4edda"); // Green for available
+                portalCheckbox.getElement().getStyle().set("background-color", "#d4edda");
 
                 final String selectedTimeSlot = timeSlot;
                 portalCheckbox.addValueChangeListener(event -> {
@@ -247,73 +228,52 @@ public class SchedulesView extends VerticalLayout {
         return portalLayout;
     }
 
-//    private Grid<Schedule> createScheduleTable() {
-//        Grid<Schedule> scheduleGrid = new Grid<>(Schedule.class);
-//        scheduleGrid.setWidth("80%");
-//        scheduleGrid.setColumns("vehicleType", "branch", "date", "startTime", "endTime", "reservedBy");
-//        scheduleGrid.setItems(scheduleService.getAllSchedules());
-//        return scheduleGrid;
-//    }
-private void createSchedule() {
-    // Проверяваме дали всички полета са попълнени
-    if (vehicleTypeComboBox.isEmpty() || branchComboBox.isEmpty() || datePicker.isEmpty() || goodsMeters.isEmpty()) {
-        Notification notification = Notification.show(translationService.getTranslation("Please fill in all fields!"));
-        notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
-        return;
+    private void createSchedule() {
+        if (vehicleTypeComboBox.isEmpty() || branchComboBox.isEmpty() || datePicker.isEmpty() || goodsMeters.isEmpty()) {
+            Notification notification = Notification.show(translationService.getTranslation("Please fill in all fields!"));
+            notification.setPosition(Notification.Position.TOP_CENTER);
+            return;
+        }
+        String currentUser = (String) VaadinSession.getCurrent().getAttribute("email");
+        if (currentUser == null) {
+            Notification notification = Notification.show(translationService.getTranslation("Please log in to create a schedule!"));
+            notification.setPosition(Notification.Position.TOP_CENTER);
+            return;
+        }
+        BranchLocationEnum selectedBranch = branchComboBox.getValue();
+        int totalUnloadingTime = scheduleService.calculateUnloadingTime(goodsMeters);
+
+        LocalTime startTime = getSelectedStartTime();
+        LocalTime endTime = startTime.plusMinutes(totalUnloadingTime);
+
+        Schedule schedule = new Schedule();
+        schedule.setVehicleType(vehicleTypeComboBox.getValue());
+        schedule.setBranch(selectedBranch);
+        schedule.setGoods(goodsMeters);
+        schedule.setDate(datePicker.getValue());
+        schedule.setStartTime(startTime);
+        schedule.setEndTime(endTime);
+        schedule.setReservedBy(currentUser);
+
+        scheduleService.addSchedule(schedule);
+
+        Notification notification = Notification.show(translationService.getTranslation("The schedule has been created successfully!"));
+        notification.setPosition(Notification.Position.TOP_CENTER);
+
+        refreshPortalGrid();
     }
-
-    // Извличане на текущия потребител
-    String currentUser = (String) VaadinSession.getCurrent().getAttribute("email");
-    if (currentUser == null) {
-        Notification notification = Notification.show(translationService.getTranslation("Please log in to create a schedule!"));
-        notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
-        return;
-    }
-
-    // Вземаме избраната стойност за филиал от ComboBox
-    BranchLocationEnum selectedBranch = branchComboBox.getValue();  // Вече взимаме стойността като BranchLocationEnum
-
-    // Изчисляваме общото време за разтоварване
-    int totalUnloadingTime = scheduleService.calculateUnloadingTime(goodsMeters);
-
-    // Получаваме избрания начален час
-    LocalTime startTime = getSelectedStartTime();
-    LocalTime endTime = startTime.plusMinutes(totalUnloadingTime);
-
-    // Създаваме нов график
-    Schedule schedule = new Schedule();
-
-    // Задаваме стойностите за полетата на графика
-    schedule.setVehicleType(vehicleTypeComboBox.getValue()); // Превозно средство
-    schedule.setBranch(selectedBranch);  // Филиал (от тип BranchLocationEnum)
-    schedule.setGoods(goodsMeters); // Стоки
-    schedule.setDate(datePicker.getValue()); // Дата
-    schedule.setStartTime(startTime); // Начален час
-    schedule.setEndTime(endTime); // Краен час
-    schedule.setReservedBy(currentUser); // Кой е създал графика (потребителят)
-
-    // Добавяме графика в базата
-    scheduleService.addSchedule(schedule);
-
-    // Показваме известие за успех
-    Notification notification = Notification.show(translationService.getTranslation("The schedule has been created successfully!"));
-    notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
-
-    // Обновяваме времевите интервали в грид-а
-    refreshPortalGrid();
-}
 
     private boolean isUpdating = false;
 
     private void markTimeSlots(String startSlot) {
         if (isUpdating) {
-            return; // Предотвратяваме повторно извикване
+            return;
         }
 
-        isUpdating = true; // Започваме операцията
+        isUpdating = true;
 
         try {
-            unmarkTimeSlots(); // Изчистваме преди маркиране
+            unmarkTimeSlots();
 
             LocalTime startTime = LocalTime.parse(startSlot);
             int totalUnloadingTime = scheduleService.calculateUnloadingTime(goodsMeters);
@@ -327,15 +287,14 @@ private void createSchedule() {
                 }
             });
         } finally {
-            isUpdating = false; // Завършваме операцията
+            isUpdating = false;
         }
     }
 
     private void unmarkTimeSlots() {
-        // Изчистваме всички чекбокси до първоначално състояние
         timeSlots.forEach((timeSlot, checkbox) -> {
-            checkbox.setValue(false); // Деактивираме маркировката
-            checkbox.getElement().getStyle().set("background-color", "#d4edda"); // Зелен фон за свободно
+            checkbox.setValue(false);
+            checkbox.getElement().getStyle().set("background-color", "#d4edda");
         });
     }
 
@@ -349,16 +308,13 @@ private void createSchedule() {
     }
 
     private void updateTimeSlotsForDate(LocalDate selectedDate, BranchLocationEnum selectedBranch) {
-        // Извличаме графици за избрания ден и филиал
         List<Schedule> schedules = scheduleService.getSchedulesByBranchAndDate(selectedBranch, selectedDate);
 
-        // Нулираме стила на всички слотове
         timeSlots.forEach((timeSlot, checkbox) -> {
-            checkbox.setEnabled(true); // Активираме всички
-            checkbox.getElement().getStyle().set("background-color", "#d4edda"); // Зелен фон за свободен слот
+            checkbox.setEnabled(true);
+            checkbox.getElement().getStyle().set("background-color", "#d4edda");
         });
 
-        // Маркираме заетите слотове
         for (Schedule schedule : schedules) {
             LocalTime startTime = schedule.getStartTime();
             LocalTime endTime = schedule.getEndTime();
@@ -368,23 +324,22 @@ private void createSchedule() {
                 Checkbox checkbox = timeSlots.get(timeSlot);
 
                 if (checkbox != null) {
-                    checkbox.getElement().getStyle().set("background-color", "#f8d7da"); // Червен фон за зает слот
-                    checkbox.setEnabled(false); // Забраняваме избора
+                    checkbox.getElement().getStyle().set("background-color", "#f8d7da");
+                    checkbox.setEnabled(false);
                 }
             }
         }
     }
+
     private void refreshPortalGrid() {
         LocalDate selectedDate = datePicker.getValue();
-        BranchLocationEnum selectedBranch = branchComboBox.getValue();  // Вече получаваме директно BranchLocationEnum
+        BranchLocationEnum selectedBranch = branchComboBox.getValue();
         if (selectedDate != null && selectedBranch != null) {
-            updateTimeSlotsForDate(selectedDate, selectedBranch);  // Използваме BranchLocationEnum директно
+            updateTimeSlotsForDate(selectedDate, selectedBranch);
         }
     }
 
-   //метод за промяна на имената от енъма.Друг вариант е с toString() в енъма - Ваадин ще го взема автоматично
     private String formatGoodsName(String enumName) {
-        // Разделяме текста на базата на "_" и преобразуваме всяка дума
         String[] words = enumName.split("_");
         StringBuilder formattedName = new StringBuilder();
 
@@ -398,19 +353,15 @@ private void createSchedule() {
     }
 
     private boolean areAllSlotsOccupied() {
-        // Преглеждаме всички слотове от 8:00 до 18:00
         for (int hour = 8; hour < 18; hour++) {
             for (int j = 0; j < 4; j++) {
                 String timeSlot = String.format("%02d:%02d", hour, j * 15);
                 Checkbox checkbox = timeSlots.get(timeSlot);
-
-                // Ако поне един чекбокс не е избран, връщаме false
                 if (checkbox != null && !checkbox.getValue()) {
                     return false;
                 }
             }
         }
-        // Ако всички са заети
         return true;
     }
 

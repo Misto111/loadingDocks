@@ -30,8 +30,8 @@ public class ProfileView extends VerticalLayout {
     private TextField emailField;
     private TextField phoneNumberField;
 
-    private PasswordField newPasswordField; // Ново поле за нова парола
-    private Button changePasswordButton; // Бутон за смяна на паролата
+    private PasswordField newPasswordField;
+    private Button changePasswordButton;
 
     private Button saveButton;
     private Button scheduleButton;
@@ -59,7 +59,6 @@ public class ProfileView extends VerticalLayout {
         setSpacing(true);
 
         String email = (String) VaadinSession.getCurrent().getAttribute("email");
-        //System.out.println("Current session email: " + email);
         if (email == null) {
             navigateToLogin();
         } else {
@@ -80,7 +79,7 @@ public class ProfileView extends VerticalLayout {
             firstNameField.setValue(driver.getFirstName());
             lastNameField.setValue(driver.getLastName());
             emailField.setValue(driver.getEmail());
-            emailField.setEnabled(false); // Email cannot be changed
+            emailField.setEnabled(false);
             phoneNumberField.setValue(driver.getPhoneNumber());
         }
     }
@@ -90,13 +89,10 @@ public class ProfileView extends VerticalLayout {
         scheduleButton.addClickListener(event -> getUI().ifPresent(ui -> ui.navigate("schedule")));
 
         changePasswordButton.addClickListener(event -> changePassword());
-
-//        backButton.addClickListener(event -> getUI().ifPresent(ui -> ui.navigate("")));
-//        backButton.getStyle().set("margin-right", "auto"); // Избутва бутона "Back" вляво
     }
 
     private void addComponents() {
-        Button backButton = BackButtonService.createBackButton("", translationService); // Empty for root navigation
+        Button backButton = BackButtonService.createBackButton("", translationService);
         add(
                 backButton,
                 firstNameField,
@@ -119,7 +115,6 @@ public class ProfileView extends VerticalLayout {
                 driver.setFirstName(firstNameField.getValue());
                 driver.setLastName(lastNameField.getValue());
                 driver.setPhoneNumber(phoneNumberField.getValue());
-                // Не задаваме парола, освен ако потребителят не въвежда нова
                 driverService.saveDriver(driver);
                 updateSessionAttributes(driver);
                 Notification.show(translationService.getTranslation("Profile updated successfully!"), 3000, Notification.Position.TOP_CENTER);
@@ -140,10 +135,10 @@ public class ProfileView extends VerticalLayout {
             String email = emailField.getValue();
             DriverEntity driver = driverService.getDriverByUsername(email);
             if (driver != null) {
-                driver.setPassword(newPassword); // Новата парола ще бъде кодирана в `DriverServiceImpl`
+                driver.setPassword(newPassword);
                 driverService.saveDriver(driver);
                 Notification.show(translationService.getTranslation("Password changed successfully!"), 3000, Notification.Position.TOP_CENTER);
-                newPasswordField.clear(); // Изчистваме полето за новата парола
+                newPasswordField.clear();
             }
         } catch (Exception e) {
             Notification.show(translationService.getTranslation("Error changing password: ") + e.getMessage(), 5000, Notification.Position.TOP_CENTER);
@@ -162,8 +157,6 @@ class ScheduleView extends VerticalLayout {
 
     private final TranslationService translationService;
 
-    // private Button backButton = new Button("Back");
-
     private final DriverService driverService;
     private final Grid<Schedule> grid = new Grid<>(Schedule.class);
 
@@ -171,7 +164,6 @@ class ScheduleView extends VerticalLayout {
         this.translationService = translationService;
         this.driverService = driverService;
 
-        // Центрираме всичко в VerticalLayout
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
@@ -199,8 +191,6 @@ class ScheduleView extends VerticalLayout {
         grid.addColumn(Schedule::getReservedBy).setHeader(translationService.getTranslation("Reserved By")).setAutoWidth(true).setFlexGrow(1);
         grid.addColumn(slot -> slot.getBranch() != null ? translationService.translateEnum(slot.getBranch()) : "N/A").setHeader(translationService.getTranslation("Branch")).setAutoWidth(true).setFlexGrow(1);
 
-        //vehicleTypeComboBox.setItemLabelGenerator(vehicleType -> translationService.translateEnum(vehicleType)); // Превеждаме
-
         grid.addComponentColumn(slot -> {
             Button deleteButton = new Button(translationService.getTranslation("Delete"), event -> deleteSlot(slot));
             deleteButton.getStyle().set("color", "red");
@@ -209,20 +199,19 @@ class ScheduleView extends VerticalLayout {
 
         grid.setWidthFull();
         grid.setHeightFull();
-        grid.getStyle().set("flex-grow", "1"); // Позволява таблицата да расте с Layout-а
+        grid.getStyle().set("flex-grow", "1");
 
-        // Бутон за връщане назад
-        Button backButton = BackButtonService.createBackButton("", translationService); // Empty for root navigation
+        Button backButton = BackButtonService.createBackButton("", translationService);
 
-        setSizeFull(); // Layout-а заема цялото пространство
+        setSizeFull();
         add(backButton, grid);
     }
 
     private void deleteSlot(Schedule slot) {
         try {
-            driverService.deleteDeliverySlot(slot); // Тук предполагаме, че методът deleteDeliverySlot е имплементиран
+            driverService.deleteDeliverySlot(slot);
             Notification.show(translationService.getTranslation("Schedule deleted successfully!"), 3000, Notification.Position.TOP_CENTER);
-            refreshGrid(); // Обновяване на Grid след изтриване
+            refreshGrid();
         } catch (Exception e) {
             Notification.show(translationService.getTranslation("Error deleting schedule: ") + e.getMessage(), 5000, Notification.Position.TOP_CENTER);
         }

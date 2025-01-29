@@ -21,7 +21,7 @@ public class RegisterView extends VerticalLayout {
 
     private TextField firstNameField;
     private TextField lastNameField;
-    private PasswordField passwordField;   //PasswordField за да не се вижда какво се въвежда
+    private PasswordField passwordField;
     private PasswordField  confirmPasswordField;
     private TextField emailField;
     private TextField phoneNumberField;
@@ -31,7 +31,6 @@ public class RegisterView extends VerticalLayout {
         this.driverService = driverService;
         this.translationService = translationService;
 
-        // Инициализация на компонентите с превод
         firstNameField = new TextField(translationService.getTranslation("firstName"));
         lastNameField = new TextField(translationService.getTranslation("lastName"));
         passwordField = new PasswordField(translationService.getTranslation("password"));
@@ -40,7 +39,7 @@ public class RegisterView extends VerticalLayout {
         phoneNumberField = new TextField(translationService.getTranslation("phoneNumber"));
         submitButton = new Button(translationService.getTranslation("register"));
 
-        Button backButton = BackButtonService.createBackButton("", translationService); // Empty for root navigation
+        Button backButton = BackButtonService.createBackButton("", translationService);
 
         submitButton.addClickListener(e -> registerDriver());
         add(backButton, firstNameField, lastNameField, passwordField, confirmPasswordField, emailField, phoneNumberField, submitButton);
@@ -82,7 +81,6 @@ public class RegisterView extends VerticalLayout {
             return;
         }
 
-        // Съхраняваме новия шофьор с роля USER
         DriverEntity driver = new DriverEntity(firstName, lastName, password, phoneNumber, email, Role.USER);
         driverService.saveDriver(driver);
 

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class Holiday extends BaseEntity {
 
     @Column(nullable = false, unique = true)
-    private LocalDate date; // Дата на почивния ден
+    private LocalDate date;
 
 
 

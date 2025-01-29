@@ -27,9 +27,8 @@ public class AdminSetHolidayView extends VerticalLayout {
         this.holidayService = holidayService;
         this.translationService = translationService;
 
-        Button backButton = BackButtonService.createBackButton("", translationService); // Empty for root navigation
+        Button backButton = BackButtonService.createBackButton("", translationService);
 
-        // Центрираме останалата част от съдържанието
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
@@ -49,21 +48,15 @@ public class AdminSetHolidayView extends VerticalLayout {
 
         loadHolidays();
 
-        // Маркиране на почивните дни в календара
         holidayPicker.addValueChangeListener(event -> highlightHolidays());
     }
 
     private void configureHolidayGrid() {
-        // Премахваме автоматично създадените колони
         holidayGrid.removeAllColumns();
-        //по този начин задаваме таблицата, за да не се бърка базата данни от превода
         holidayGrid.addColumn(Holiday::getDate)
                 .setHeader(translationService.getTranslation("date"))
                 .setKey("date");
 
-        //Преди превода бяха тези 4 реда отдолу, включително закоментираните
-//        holidayGrid.setColumns("date");
-//        holidayGrid.setSizeFull();
         holidayGrid.addSelectionListener(selectionEvent -> {
             selectionEvent.getFirstSelectedItem().ifPresent(holiday -> holidayPicker.setValue(holiday.getDate()));
         });
@@ -74,7 +67,7 @@ public class AdminSetHolidayView extends VerticalLayout {
 
         if (selectedDate == null) {
             Notification notification = Notification.show(translationService.getTranslation("Please select a date"));
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            notification.setPosition(Notification.Position.TOP_CENTER);
             return;
         }
 
@@ -84,13 +77,13 @@ public class AdminSetHolidayView extends VerticalLayout {
 
             holidayService.addHoliday(holiday);
             Notification notification = Notification.show(translationService.getTranslation("The holiday has been added successfully"));
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            notification.setPosition(Notification.Position.TOP_CENTER);
             loadHolidays();
             holidayPicker.clear();
 
         } catch (Exception e) {
             Notification notification = Notification.show(translationService.getTranslation("Error: ") + e.getMessage());
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            notification.setPosition(Notification.Position.TOP_CENTER);
         }
     }
 
@@ -99,14 +92,14 @@ public class AdminSetHolidayView extends VerticalLayout {
 
         if (selectedHoliday == null) {
             Notification notification = Notification.show(translationService.getTranslation("Please select a holiday to delete"));
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            notification.setPosition(Notification.Position.TOP_CENTER);
             return;
         }
 
         try {
             holidayService.deleteHoliday(selectedHoliday.getId());
             Notification notification = Notification.show(translationService.getTranslation("The holiday has been deleted successfully"));
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            notification.setPosition(Notification.Position.TOP_CENTER);
             loadHolidays();
         } catch (Exception e) {
             Notification.show(translationService.getTranslation(translationService.getTranslation("Error: ")) + e.getMessage());
@@ -119,14 +112,13 @@ public class AdminSetHolidayView extends VerticalLayout {
             holidayGrid.setItems(holidays);
         } catch (Exception e) {
             Notification notification = Notification.show(translationService.getTranslation("Error loading holidays: ") + e.getMessage());
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            notification.setPosition(Notification.Position.TOP_CENTER);
         }
     }
 
     private void highlightHolidays() {
         List<Holiday> holidays = holidayService.getAllHolidays();
 
-        // Изчистваме всички предишни стилизации
         holidayPicker.getElement().executeJs(
                 "setTimeout(() => {"+
                         "  this.shadowRoot.querySelectorAll('[part=\"cell\"]').forEach(function(cell) {"+
@@ -136,7 +128,6 @@ public class AdminSetHolidayView extends VerticalLayout {
                         "}, 200);"
         );
 
-        // Добавяне на стилизация за почивните дни
         for (Holiday holiday : holidays) {
             LocalDate holidayDate = holiday.getDate();
 

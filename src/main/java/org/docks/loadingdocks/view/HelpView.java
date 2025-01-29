@@ -16,31 +16,27 @@ public class HelpView extends VerticalLayout {
     public HelpView(TranslationService translationService) {
         this.translationService = translationService;
 
-        Button backButton = BackButtonService.createBackButton("", translationService); // Empty for root navigation
+        Button backButton = BackButtonService.createBackButton("", translationService);
 
-        // Главен layout
         setSizeFull();
-        setAlignItems(Alignment.CENTER); // Центрираме елементите хоризонтално
+        setAlignItems(Alignment.CENTER);
 
-        // Главно заглавие (най-отгоре)
         H1 mainTitle = new H1("Important information that must be read!");
         mainTitle.getStyle()
-                .set("color", "black") // Син цвят
-                .set("font-size", "36px") // Размер на шрифта
-                .set("font-weight", "bold") // Удебелен текст
-                .set("margin-bottom", "20px"); // Разстояние под заглавието
+                .set("color", "black")
+                .set("font-size", "36px")
+                .set("font-weight", "bold")
+                .set("margin-bottom", "20px");
 
-        // Текст под заглавието
         Div textContainer = new Div();
         textContainer.setText("Instructions that every user must follow.");
         textContainer.getStyle()
-                .set("color", "blue") // Син цвят
-                .set("font-size", "20px") // Размер на шрифта
-                .set("text-align", "center") // Центриране на текста хоризонтално
-                .set("max-width", "600px") // Ограничение на ширината за добър изглед
-                .set("margin-top", "0px"); // Минимално разстояние над текста
+                .set("color", "blue")
+                .set("font-size", "20px")
+                .set("text-align", "center")
+                .set("max-width", "600px")
+                .set("margin-top", "0px");
 
-        // Добавяме елементите към главния layout
         add(backButton, mainTitle, textContainer);
     }
 }

@@ -10,7 +10,7 @@ public class BackButtonService {
         Button backButton = new Button(backButtonText);
         backButton.addClickListener(e -> backButton.getUI().ifPresent(ui ->
                 ui.getPage().executeJs("window.history.back()")));
-        backButton.getStyle().set("margin-right", "auto"); // Избутва бутона "Back" вляво
+        backButton.getStyle().set("margin-right", "auto");
 
         return backButton;
     }

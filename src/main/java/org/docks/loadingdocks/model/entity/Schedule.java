@@ -2,7 +2,6 @@ package org.docks.loadingdocks.model.entity;
 import jakarta.persistence.*;
 import org.docks.loadingdocks.enums.BranchLocationEnum;
 import org.docks.loadingdocks.enums.VehicleType;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -11,26 +10,26 @@ import java.util.Map;
 @Entity
 public class Schedule extends BaseEntity {
 
-    @Enumerated(EnumType.STRING)  // Това ще осигури, че ще използваме стойностите от енумите като низове в базата
+    @Enumerated(EnumType.STRING)
     private BranchLocationEnum branch;
 
     @ElementCollection
     @CollectionTable(name = "schedule_goods", joinColumns = @JoinColumn(name = "schedule_id"))
     @MapKeyColumn(name = "goods_type")
     @Column(name = "linear_meters")
-    private Map<String, Double> goods = new HashMap<>(); // Стока и линейни метри (сега използваме name() за енум)
+    private Map<String, Double> goods = new HashMap<>();
 
     @Column(nullable = false)
-    private int unloadingTime; // Общо време за разтоварване (в минути)
+    private int unloadingTime;
 
     @Column(nullable = false)
-    private LocalDate date; // Дата
+    private LocalDate date;
 
     @Column(nullable = false)
-    private LocalTime startTime; // Начален час
+    private LocalTime startTime;
 
     @Column(nullable = false)
-    private LocalTime endTime; // Краен час
+    private LocalTime endTime;
 
     @Enumerated(EnumType.STRING)
     private VehicleType vehicleType;

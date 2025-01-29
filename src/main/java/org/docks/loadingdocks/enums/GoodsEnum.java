@@ -7,7 +7,6 @@ public enum GoodsEnum {
     MATTRESSES;
 
 
-    //Ваадин автоматично ще вземе toString() метода
     @Override
     public String toString() {
         switch (this) {

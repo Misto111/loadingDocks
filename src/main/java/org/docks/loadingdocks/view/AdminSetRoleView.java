@@ -27,32 +27,26 @@ public class AdminSetRoleView extends VerticalLayout {
         this.driverService = driverService;
         this.translationService = translationService;
 
-        // Задаваме размер на целия layout
         setSizeFull();
 
         configureUserGrid();
 
-        Button backButton = BackButtonService.createBackButton("", translationService); // Empty for root navigation
+        Button backButton = BackButtonService.createBackButton("", translationService);
 
         saveRolesButton = new Button(translationService.getTranslation("saveChanges"));
         saveRolesButton.addClickListener(e -> saveRoleChanges());
-        saveRolesButton.getStyle().set("margin-left", "auto"); // Избутва бутона "Back" вдясно
+        saveRolesButton.getStyle().set("margin-left", "auto");
 
-        // Добавяме таблицата и бутона
         add(backButton, saveRolesButton, userGrid);
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
-
-        // Зареждаме потребителите
         loadUsers();
     }
 
     private void configureUserGrid() {
-        // Премахваме автоматично създадените колони
         userGrid.removeAllColumns();
 
-        // Добавяме колони ръчно с преводи за заглавията
         userGrid.addColumn(DriverEntity::getId)
                 .setHeader(translationService.getTranslation("id"))
                 .setKey("id");
@@ -69,10 +63,6 @@ public class AdminSetRoleView extends VerticalLayout {
                 .setHeader(translationService.getTranslation("lastName"))
                 .setKey("lastName");
 
-//        userGrid.addColumn(DriverEntity::getPassword)
-//                .setHeader(translationService.getTranslation("password"))
-//                .setKey("password");
-
         userGrid.addColumn(DriverEntity::getPhoneNumber)
                 .setHeader(translationService.getTranslation("phoneNumber"))
                 .setKey("phoneNumber");
@@ -85,7 +75,6 @@ public class AdminSetRoleView extends VerticalLayout {
                 .setHeader(translationService.getTranslation("fullName"))
                 .setKey("fullName");
 
-        // Добавяме чекбоксове за ролите
         for (Role role : Role.values()) {
             userGrid.addComponentColumn(user -> {
                 Checkbox checkbox = new Checkbox();
@@ -99,7 +88,6 @@ public class AdminSetRoleView extends VerticalLayout {
             }).setHeader(translationService.getTranslation(role.name().toLowerCase()));
         }
 
-        // Задаваме размер на таблицата
         userGrid.setSizeFull();
         userGrid.setHeight("600px");
     }
@@ -110,7 +98,7 @@ public class AdminSetRoleView extends VerticalLayout {
             userGrid.setItems(users);
         } catch (Exception ex) {
             Notification notification = Notification.show(translationService.getTranslation("Error loading users: ") + ex.getMessage());
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            notification.setPosition(Notification.Position.TOP_CENTER);
         }
     }
 
@@ -121,12 +109,10 @@ public class AdminSetRoleView extends VerticalLayout {
                 DriverEntity existingUser = driverService.getDriverByUsername(user.getEmail());
                 if (!existingUser.getRole().equals(user.getRole())) {
                     existingUser.setRole(user.getRole());
-                    driverService.saveDriver(existingUser); // Запазва се само, ако има промяна
+                    driverService.saveDriver(existingUser);
                 }
             }
             Notification.show(translationService.getTranslation("Roles updated successfully."), 3000, Notification.Position.TOP_CENTER);
-
-            // Обновете таблицата
             loadUsers();
 
         } catch (Exception ex) {

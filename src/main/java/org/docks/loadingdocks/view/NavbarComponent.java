@@ -26,10 +26,8 @@ public class NavbarComponent extends HorizontalLayout {
     public NavbarComponent(TranslationService translationService) {
         this.translationService = translationService;
 
-        // Настройка на компоненти
         initComponents();
 
-        // Добавяне на бутони според състоянието на сесията
         setupButtons();
     }
 
@@ -40,7 +38,6 @@ public class NavbarComponent extends HorizontalLayout {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.BETWEEN);
 
-        // Създаване и настройка на езиковия селектор
         languageSelector = new ComboBox<>(translationService.getTranslation("Language"));
         languageSelector.setItems("English", "Български");
 
@@ -49,7 +46,6 @@ public class NavbarComponent extends HorizontalLayout {
                 : Locale.ENGLISH.getLanguage();
         languageSelector.setValue(currentLanguage.equals("bg") ? "Български" : "English");
 
-        // Позициониране на селектора за език горе вдясно
         languageSelector.setWidth("150px");
         languageSelector.getStyle()
                 .set("position", "absolute")
@@ -57,7 +53,6 @@ public class NavbarComponent extends HorizontalLayout {
                 .set("right", "10px");
         languageSelector.addValueChangeListener(event -> changeLanguage(event.getValue()));
 
-        // Инициализация на бутоните
         profileButton = new Button();
         createScheduleButton = new Button();
         adminPanelButton = new Button();
@@ -67,10 +62,7 @@ public class NavbarComponent extends HorizontalLayout {
         registerButton = new Button();
         helpButton = new Button();
 
-        // Обновяване на текста на бутоните
         updateButtonTexts();
-
-        // Добавяне на езиковия селектор директно към layout-а
         add(languageSelector);
     }
 
@@ -111,7 +103,7 @@ public class NavbarComponent extends HorizontalLayout {
 
     private void changeLanguage(String language) {
         translationService.changeLanguage(language);
-        updateButtonTexts(); // Обновява текста на бутоните
+        updateButtonTexts();
     }
 
     private boolean isLoggedIn() {

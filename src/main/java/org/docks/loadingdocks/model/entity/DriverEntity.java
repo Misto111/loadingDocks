@@ -25,14 +25,12 @@ public class DriverEntity extends BaseEntity {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    private Role role; // Поле за роля
+    private Role role;
 
 
-    // Конструктор без параметри
     public DriverEntity() {
     }
 
-    // Конструктор с параметри
     public DriverEntity(String firstName, String lastName, String password, String phoneNumber, String email, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -42,7 +40,6 @@ public class DriverEntity extends BaseEntity {
         this.role = role;
     }
 
-    // Гетъри и сетъри
     public String getFirstName() {
         return firstName;
     }

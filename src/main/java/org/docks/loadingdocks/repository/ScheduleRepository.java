@@ -11,9 +11,6 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    // Променяме типа на параметъра от String на BranchLocationEnum
     List<Schedule> findByBranchAndDate(BranchLocationEnum branch, LocalDate date);
-
-    // Запазваме този метод, но ако имате нужда, променете и другите
     List<Schedule> findAllByReservedBy(String email);
 }

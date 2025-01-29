@@ -18,9 +18,8 @@ public class AdminPanelView extends VerticalLayout {
         this.translationService = translationService;
 
 
-        Button backButton = BackButtonService.createBackButton("", translationService); // Empty for root navigation
+        Button backButton = BackButtonService.createBackButton("", translationService);
 
-        // Инициализация на компонентите с превод
         allSchedulesButton = new Button(translationService.getTranslation("allSchedules"));
         setRoleButton = new Button(translationService.getTranslation("setRole"));
         setHolidayButton = new Button(translationService.getTranslation("setHoliday"));
@@ -31,13 +30,6 @@ public class AdminPanelView extends VerticalLayout {
         allSchedulesButton.addClickListener(e -> navigateToАllSchedules());
         setRoleButton.addClickListener(е-> navigateToSetRole());
         setHolidayButton.addClickListener(e -> navigateToSetHoliday());
-
-
-//        // Бутон за управление на почивни дни
-//        Button setHolidayButton = new Button("Set Holiday", event ->
-//                getUI().ifPresent(ui -> ui.navigate("admin-set-holiday"))
-//
-//        );
 
 
         add(backButton, allSchedulesButton, setRoleButton, setHolidayButton);

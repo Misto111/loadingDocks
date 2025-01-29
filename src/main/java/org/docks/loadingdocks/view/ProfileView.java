@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
@@ -28,8 +29,14 @@ public class ProfileView extends VerticalLayout {
     private TextField lastNameField;
     private TextField emailField;
     private TextField phoneNumberField;
+
+    private PasswordField newPasswordField; // Ново поле за нова парола
+    private Button changePasswordButton; // Бутон за смяна на паролата
+
     private Button saveButton;
     private Button scheduleButton;
+
+
 
     public ProfileView(TranslationService translationService, DriverService driverService) {
         this.translationService = translationService;
@@ -39,7 +46,12 @@ public class ProfileView extends VerticalLayout {
         lastNameField = new TextField(translationService.getTranslation("Last Name"));
         emailField = new TextField(translationService.getTranslation("Email"));
         phoneNumberField = new TextField(translationService.getTranslation("Phone Number"));
-        saveButton = new Button(translationService.getTranslation("Save Changes"));
+
+        newPasswordField = new PasswordField(translationService.getTranslation("New Password"));
+        newPasswordField.setPlaceholder(translationService.getTranslation("Enter new password"));
+
+        changePasswordButton = new Button(translationService.getTranslation("Change Password"));
+        saveButton = new Button(translationService.getTranslation("Save All Changes"));
         scheduleButton = new Button(translationService.getTranslation("My Schedule"));
 
         setAlignItems(Alignment.CENTER);
@@ -77,6 +89,8 @@ public class ProfileView extends VerticalLayout {
         saveButton.addClickListener(event -> saveChanges());
         scheduleButton.addClickListener(event -> getUI().ifPresent(ui -> ui.navigate("schedule")));
 
+        changePasswordButton.addClickListener(event -> changePassword());
+
 //        backButton.addClickListener(event -> getUI().ifPresent(ui -> ui.navigate("")));
 //        backButton.getStyle().set("margin-right", "auto"); // Избутва бутона "Back" вляво
     }
@@ -89,6 +103,8 @@ public class ProfileView extends VerticalLayout {
                 lastNameField,
                 emailField,
                 phoneNumberField,
+                newPasswordField,
+                changePasswordButton,
                 saveButton,
                 scheduleButton
 
@@ -103,12 +119,34 @@ public class ProfileView extends VerticalLayout {
                 driver.setFirstName(firstNameField.getValue());
                 driver.setLastName(lastNameField.getValue());
                 driver.setPhoneNumber(phoneNumberField.getValue());
+                // Не задаваме парола, освен ако потребителят не въвежда нова
                 driverService.saveDriver(driver);
                 updateSessionAttributes(driver);
                 Notification.show(translationService.getTranslation("Profile updated successfully!"), 3000, Notification.Position.TOP_CENTER);
             }
         } catch (Exception e) {
             Notification.show(translationService.getTranslation("Error updating profile: ") + e.getMessage(), 5000, Notification.Position.TOP_CENTER);
+        }
+    }
+
+    private void changePassword() {
+        try {
+            String newPassword = newPasswordField.getValue();
+            if (newPassword == null || newPassword.trim().isEmpty() || newPassword.length() < 6) {
+                Notification.show(translationService.getTranslation("Password must be at least 6 characters long!"), 5000, Notification.Position.TOP_CENTER);
+                return;
+            }
+
+            String email = emailField.getValue();
+            DriverEntity driver = driverService.getDriverByUsername(email);
+            if (driver != null) {
+                driver.setPassword(newPassword); // Новата парола ще бъде кодирана в `DriverServiceImpl`
+                driverService.saveDriver(driver);
+                Notification.show(translationService.getTranslation("Password changed successfully!"), 3000, Notification.Position.TOP_CENTER);
+                newPasswordField.clear(); // Изчистваме полето за новата парола
+            }
+        } catch (Exception e) {
+            Notification.show(translationService.getTranslation("Error changing password: ") + e.getMessage(), 5000, Notification.Position.TOP_CENTER);
         }
     }
 

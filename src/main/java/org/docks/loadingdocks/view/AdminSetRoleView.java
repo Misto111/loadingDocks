@@ -69,9 +69,9 @@ public class AdminSetRoleView extends VerticalLayout {
                 .setHeader(translationService.getTranslation("lastName"))
                 .setKey("lastName");
 
-        userGrid.addColumn(DriverEntity::getPassword)
-                .setHeader(translationService.getTranslation("password"))
-                .setKey("password");
+//        userGrid.addColumn(DriverEntity::getPassword)
+//                .setHeader(translationService.getTranslation("password"))
+//                .setKey("password");
 
         userGrid.addColumn(DriverEntity::getPhoneNumber)
                 .setHeader(translationService.getTranslation("phoneNumber"))
@@ -118,14 +118,19 @@ public class AdminSetRoleView extends VerticalLayout {
         List<DriverEntity> updatedUsers = userGrid.getListDataView().getItems().toList();
         try {
             for (DriverEntity user : updatedUsers) {
-                driverService.saveDriver(user);
+                DriverEntity existingUser = driverService.getDriverByUsername(user.getEmail());
+                if (!existingUser.getRole().equals(user.getRole())) {
+                    existingUser.setRole(user.getRole());
+                    driverService.saveDriver(existingUser); // Запазва се само, ако има промяна
+                }
             }
-            Notification notification = Notification.show(translationService.getTranslation("Roles updated successfully."));
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            Notification.show(translationService.getTranslation("Roles updated successfully."), 3000, Notification.Position.TOP_CENTER);
+
+            // Обновете таблицата
+            loadUsers();
 
         } catch (Exception ex) {
-            Notification notification = Notification.show(translationService.getTranslation("Error saving roles: ") + ex.getMessage());
-            notification.setPosition(Notification.Position.TOP_CENTER); // Позиция: горе в центъра
+            Notification.show(translationService.getTranslation("Error saving roles: ") + ex.getMessage(), 5000, Notification.Position.TOP_CENTER);
         }
     }
 }

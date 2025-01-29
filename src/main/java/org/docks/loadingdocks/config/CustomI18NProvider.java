@@ -97,7 +97,7 @@ public class CustomI18NProvider implements I18NProvider {
         addTranslation("actions", Locale.ENGLISH, "Actions");
         addTranslation("actions", new Locale("bg"), "Действия");
 
-        addTranslation("saveChanges", Locale.ENGLISH, "Save changes");
+        addTranslation("saveChanges", Locale.ENGLISH, "Save Changes");
         addTranslation("saveChanges", new Locale("bg"), "Запази промените");
 
         addTranslation("Error loading users: ", Locale.ENGLISH, "Error loading users:");
@@ -225,7 +225,7 @@ public class CustomI18NProvider implements I18NProvider {
 
         addTranslation("Phone Number", new Locale("bg"), "Телефон");
 
-        addTranslation("Save Changes", new Locale("bg"), "Запази промените");
+        addTranslation("Save All Changes", new Locale("bg"), "Запази промените");
 
         addTranslation("My Schedule", new Locale("bg"), "Моят график");
 
@@ -254,6 +254,18 @@ public class CustomI18NProvider implements I18NProvider {
         addTranslation("You have no upcoming deliveries", new Locale("bg"), "Нямате предстоящи доставки");
 
         addTranslation("Error loading schedule: ", new Locale("bg"), "Грешка при зареждане на графика: ");
+
+        addTranslation("Password must be at least 6 characters long!", new Locale("bg"), "Паролата трябва да е с дължина поне 6 знака!");
+
+        addTranslation("Password changed successfully!", new Locale("bg"), "Паролата е променена успешно!");
+
+        addTranslation("Error changing password: ", new Locale("bg"), "Грешка при промяна на паролата: ");
+
+        addTranslation("New Password", new Locale("bg"), "Нова парола");
+
+        addTranslation("Enter new password", new Locale("bg"), "Въведете нова парола");
+
+        addTranslation("Change Password", new Locale("bg"), "Промяна на паролата");
 
 
     }

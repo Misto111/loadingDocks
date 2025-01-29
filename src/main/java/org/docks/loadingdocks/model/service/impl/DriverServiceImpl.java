@@ -34,10 +34,26 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public DriverEntity saveDriver(DriverEntity driverEntity) {
-        String encodedPassword = passwordEncoder.encode(driverEntity.getPassword());
-        driverEntity.setPassword(encodedPassword);
+        if (driverEntity.getId() == null) {
+            // Това е нов драйвър, задаваме му криптирана парола
+            driverEntity.setPassword(passwordEncoder.encode(driverEntity.getPassword()));
+            return driverRepository.save(driverEntity);
+        }
 
-        return driverRepository.save(driverEntity);
+        // Ако драйвърът вече съществува, обновяваме данните му
+        DriverEntity existingDriver = driverRepository.findById(driverEntity.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Driver not found with ID: " + driverEntity.getId()));
+
+        existingDriver.setFirstName(driverEntity.getFirstName());
+        existingDriver.setLastName(driverEntity.getLastName());
+        existingDriver.setPhoneNumber(driverEntity.getPhoneNumber());
+
+        // Ако е променена паролата, я криптираме
+        if (!driverEntity.getPassword().equals(existingDriver.getPassword())) {
+            existingDriver.setPassword(passwordEncoder.encode(driverEntity.getPassword()));
+        }
+
+        return driverRepository.save(existingDriver);
     }
 
     @Override
